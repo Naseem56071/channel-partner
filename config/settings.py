@@ -11,12 +11,14 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 import os
 import dj_database_url
+import dotenv
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+dotenv.load_dotenv(os.path.join(BASE_DIR, '.env'))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
@@ -80,9 +82,14 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+tmp_db_url = os.environ.get("DATABASE_URL")
+if tmp_db_url and "ssl-mode=" in tmp_db_url:
+    # Convert hyphens to underscores for Python's mysqlclient driver
+    tmp_db_url = tmp_db_url.replace("ssl-mode=", "ssl_mode=")
+
 DATABASES = {
     "default": dj_database_url.parse(
-        os.environ.get("DATABASE_URL"),
+        tmp_db_url,
         conn_max_age=600,
     )
 }
