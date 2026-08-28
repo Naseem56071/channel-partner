@@ -82,18 +82,29 @@ WSGI_APPLICATION = "config.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+# Database
+# https://docs.djangoproject.com/en/6.1/ref/settings/#databases
+
+import dj_database_url
+
 tmp_db_url = os.environ.get("DATABASE_URL")
-if tmp_db_url and "ssl-mode=" in tmp_db_url:
-    # Convert hyphens to underscores for Python's mysqlclient driver
-    tmp_db_url = tmp_db_url.replace("ssl-mode=", "ssl_mode=")
+
+# Clean any query parameters from the url string to prevent auto-passing unsupported arguments
+if tmp_db_url:
+    tmp_db_url = tmp_db_url.split("?")[0]
 
 DATABASES = {
     "default": dj_database_url.parse(
         tmp_db_url,
         conn_max_age=600,
+        ssl_require=True,  # Securely enforce SSL for Aiven
     )
 }
 
+# Ensure PyMySQL handles character sets and options correctly without crashing
+DATABASES["default"]["OPTIONS"] = {
+    "charset": "utf8mb4",
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
