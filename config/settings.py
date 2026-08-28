@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-fallback-default-key"
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    "https://channel-partner-hrhm.onrender.com",  # Allows all subdomains on Render
+    "channel-partner-hrhm.onrender.com", 
     "localhost",
     "127.0.0.1",
 ]
@@ -80,16 +80,20 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
-# https://docs.djangoproject.com/en/6.1/ref/settings/#databases
-
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
 import dj_database_url
 
+# Register mysql+pymysql to use Django's built-in mysql backend
+dj_database_url.register(
+    "mysql+pymysql",
+    backend="django.db.backends.mysql"
+)
+
 tmp_db_url = os.environ.get("DATABASE_URL")
 
-# Clean any query parameters from the url string to prevent auto-passing unsupported arguments
+# Clean any query parameters from the url string
 if tmp_db_url:
     tmp_db_url = tmp_db_url.split("?")[0]
 
@@ -101,7 +105,7 @@ DATABASES = {
     )
 }
 
-# Ensure PyMySQL handles character sets and options correctly without crashing
+# Ensure PyMySQL handles character sets and options correctly
 DATABASES["default"]["OPTIONS"] = {
     "charset": "utf8mb4",
 }
