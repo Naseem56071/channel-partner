@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-fallback-default-key"
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    ".onrender.com",  # Allows all subdomains on Render
+    "https://channel-partner-hrhm.onrender.com",  # Allows all subdomains on Render
     "localhost",
     "127.0.0.1",
 ]
